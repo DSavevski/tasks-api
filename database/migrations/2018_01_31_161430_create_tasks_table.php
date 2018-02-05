@@ -21,6 +21,7 @@ class CreateTasksTable extends Migration
             $table->enum('priority', ['Low', 'Medium', 'High']);
             $table->boolean('completed')->default(false);
             $table->integer('category_id');
+            $table->integer("user_id");
             $table->timestamps();
         });
     }

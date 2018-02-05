@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
@@ -44,6 +45,7 @@ class TaskController extends Controller
         $task->date = $input['date'];
         $task->priority = $input['priority'];
         $task->category_id = $input['category_id'];
+        $task->user_id = Auth::user()->id;
         $task->save();
 
         return response("Success");
@@ -99,7 +101,8 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
-        //
+         Task::destroy([$task->id]);
+         return response("Success",202);
     }
 
     public function dailyTasks($date){

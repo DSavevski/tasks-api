@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
 class Task extends Model
@@ -11,10 +12,10 @@ class Task extends Model
 
     public static function daily($date)
     {
-        $high = static::with('category')->where([['date', '=', $date], ['priority', '=', 'High'], ['completed', '=', '0']])->orderBy('created_at')->get();
-        $medium = static::with('category')->where([['date', '=', $date], ['priority', '=', 'Medium'], ['completed', '=', '0']])->orderBy('created_at')->get();
-        $low = static::with('category')->where([['date', '=', $date], ['priority', '=', 'Low'], ['completed', '=', '0']])->orderBy('created_at')->get();
-        $completed = static::with('category')->where([['date', '=', $date],['completed', '=', '1']])->get();
+        $high = static::with('category')->where([['date', '=', $date], ['priority', '=', 'High'], ['completed', '=', '0'],['user_id','=',Auth::user()->id]])->orderBy('created_at')->get();
+        $medium = static::with('category')->where([['date', '=', $date], ['priority', '=', 'Medium'], ['completed', '=', '0'],['user_id','=',Auth::user()->id]])->orderBy('created_at')->get();
+        $low = static::with('category')->where([['date', '=', $date], ['priority', '=', 'Low'], ['completed', '=', '0'],['user_id','=',Auth::user()->id]])->orderBy('created_at')->get();
+        $completed = static::with('category')->where([['date', '=', $date],['completed', '=', '1'],['user_id','=',Auth::user()->id]])->get();
 
 
         return response()->json([
@@ -27,7 +28,7 @@ class Task extends Model
 
     public static function helper($date)
     {
-        return static::where('date', '=', $date)->orderBy('completed')->orderBy('priority', 'desc')->get();
+        return static::with('category')->where([['date', '=', $date],['user_id','=',Auth::user()->id]])->orderBy('completed')->orderBy('priority', 'desc')->get();
     }
 
     public static function weekly($date)
@@ -42,7 +43,7 @@ class Task extends Model
             $currentDay->addDay(1);
         }
         return response()->json([
-            'data' => $data,
+            'tasks' => $data,
             'days' => $days
         ]);
     }

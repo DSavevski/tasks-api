@@ -1,7 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,9 +14,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::get('user', function (Request $request) {
+    return Auth::user();
 });
+
+Route::post('tokensignin', 'GoogleLoginController@getSignInToken');
+Route::post('signout', 'GoogleLoginController@signOut');
 
 Route::get('tasks/daily/{date}', 'TaskController@dailyTasks');
 Route::get('tasks/weekly/{date}', 'TaskController@weeklyTasks');
